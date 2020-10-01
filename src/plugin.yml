@@ -1,4 +1,4 @@
-name: HyperiorCloud_by_Groodian
+name: HyperiorProxy_by_Groodian
 author: Groodian
-version: 1.0
-main: de.groodian.hyperiorcloud.main.Main
+version: 2.0
+main: de.groodian.hyperiorproxy.main.Main
