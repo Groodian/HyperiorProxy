@@ -29,10 +29,10 @@ public class BroadcastCommand extends Command {
                 for (int i = 0; i < args.length; i++) {
                     message += args[i] + " ";
                 }
-                ProxyServer.getInstance().broadcast(new TextComponent(ChatColor.translateAlternateColorCodes('&', message)));
+                ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/broadcast <Nachricht>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/broadcast <Nachricht>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 }

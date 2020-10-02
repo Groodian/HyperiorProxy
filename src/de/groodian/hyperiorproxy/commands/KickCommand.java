@@ -29,27 +29,27 @@ public class KickCommand extends Command {
                 ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
                 String reason = "";
                 for (int i = 1; i < args.length; i++) {
-                    if (reason == "")
+                    if (reason.equals(""))
                         reason = args[i];
                     else
                         reason += " " + args[i];
                 }
                 if (target != null) {
 
-                    target.disconnect(new TextComponent(Main.DISCONNECT_HEADER +
+                    target.disconnect(TextComponent.fromLegacyText(Main.DISCONNECT_HEADER +
                             "§cDu wurdest von diesem Netzwerk gekickt." +
                             "\n§cGrund: §e" + reason));
 
                     Ban.kick(target.getUniqueId().toString().replaceAll("-", ""), target.getName(), sender.getName(), reason);
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + target.getName() + " §agekickt. Grund: §6" + reason));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + " §agekickt. Grund: §6" + reason));
                     Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + " §agekickt. Grund: §6" + reason);
                 } else {
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler ist nicht Online!"));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler ist nicht Online!"));
                 }
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/kick <Spieler> <Grund>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/kick <Spieler> <Grund>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

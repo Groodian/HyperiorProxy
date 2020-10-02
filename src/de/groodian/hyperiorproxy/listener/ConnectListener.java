@@ -45,7 +45,7 @@ public class ConnectListener implements Listener {
 
         // https://wiki.vg/Protocol_version_numbers
         if (e.getConnection().getVersion() < 47 || e.getConnection().getVersion() > 578) {
-            e.setCancelReason(new TextComponent(Main.DISCONNECT_HEADER + "§7Bitte verwende die Version §a1.8 §7- §a1.15.2"));
+            e.setCancelReason(TextComponent.fromLegacyText(Main.DISCONNECT_HEADER + "§7Bitte verwende die Version §a1.8 §7- §a1.15.2"));
             Team.notify("§6" + e.getConnection().getName() + "§a hat versucht den Server beizutreten aber verwendet eine falsche Version. §7(" + e.getConnection().getVersion() + ")");
             e.setCancelled(true);
             e.completeIntent(plugin);
@@ -54,7 +54,7 @@ public class ConnectListener implements Listener {
 
         String banDisconnectReason = Ban.getDisconnectReason(uuid);
         if (banDisconnectReason != null) {
-            e.setCancelReason(new TextComponent(banDisconnectReason));
+            e.setCancelReason(TextComponent.fromLegacyText(banDisconnectReason));
             Team.notify("§6" + name + "§a hat versucht den Server beizutreten ist aber gebannt.");
             e.setCancelled(true);
             e.completeIntent(plugin);
@@ -63,7 +63,7 @@ public class ConnectListener implements Listener {
 
         if (plugin.isMaintenance()) {
             if (!HyperiorCore.getRanks().has(uuid, "maintenance")) {
-                e.setCancelReason(new TextComponent(Main.DISCONNECT_HEADER + "§cDer Server wird derzeit gewartet! Versuche es später nochmal."));
+                e.setCancelReason(TextComponent.fromLegacyText(Main.DISCONNECT_HEADER + "§cDer Server wird derzeit gewartet! Versuche es später nochmal."));
                 Team.notify("§6" + name + "§a hat versucht den Server beizutreten aber der Server ist im Wartungs-Modus.");
                 e.setCancelled(true);
                 e.completeIntent(plugin);
@@ -75,7 +75,7 @@ public class ConnectListener implements Listener {
         if (slots > plugin.getSlots()) {
             if (!HyperiorCore.getRanks().has(uuid, "joinfullserver")) {
 
-                e.setCancelReason(new TextComponent(Main.DISCONNECT_HEADER +
+                e.setCancelReason(TextComponent.fromLegacyText(Main.DISCONNECT_HEADER +
                         "§cDer Server ist derzeit voll!" +
                         "\nDu benötigst einen Rang um trotzdem beitreten zu können."));
 

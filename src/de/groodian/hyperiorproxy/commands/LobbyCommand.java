@@ -20,10 +20,10 @@ public class LobbyCommand extends Command {
             if (!player.getServer().getInfo().getName().toLowerCase().contains("lobby")) {
                 player.connect(ProxyServer.getInstance().getServerInfo("LOBBY"));
             } else {
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cDu bist bereits in einer Lobby."));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDu bist bereits in einer Lobby."));
             }
         } else {
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler ausgeführt werden."));
         }
     }
 

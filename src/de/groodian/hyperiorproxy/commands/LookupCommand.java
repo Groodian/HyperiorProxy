@@ -33,48 +33,48 @@ public class LookupCommand extends Command {
             if (args.length == 1) {
                 ProxiedPlayer player = BungeeCord.getInstance().getPlayer(args[0]);
                 if (player != null) {
-                    sender.sendMessage(new TextComponent(output(player.getName(), player.getUniqueId().toString().replaceAll("-", ""))));
+                    sender.sendMessage(TextComponent.fromLegacyText(output(player.getName(), player.getUniqueId().toString().replaceAll("-", ""))));
                 } else {
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
                     if (uuidFetcher.getUUID(args[0]) == null) {
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
                     } else {
-                        sender.sendMessage(new TextComponent(output(uuidFetcher.getName(args[0]), uuidFetcher.getUUID(args[0]).replaceAll("-", ""))));
+                        sender.sendMessage(TextComponent.fromLegacyText(output(uuidFetcher.getName(args[0]), uuidFetcher.getUUID(args[0]).replaceAll("-", ""))));
                     }
                 }
             } else if (args.length == 2) {
                 ProxiedPlayer player = BungeeCord.getInstance().getPlayer(args[0]);
                 if (player != null) {
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§aReports §6" + player.getName() + "§a:\n" + Ban.getReportHistory(player.getUniqueId().toString().replaceAll("-", ""))));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aReports §6" + player.getName() + "§a:\n" + Ban.getReportHistory(player.getUniqueId().toString().replaceAll("-", ""))));
                 } else {
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
                     if (uuidFetcher.getUUID(args[0]) == null) {
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
                     } else {
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§aReports §6" + uuidFetcher.getName(args[0]) + "§a:\n" + Ban.getReportHistory(uuidFetcher.getUUID(args[0]).replaceAll("-", ""))));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aReports §6" + uuidFetcher.getName(args[0]) + "§a:\n" + Ban.getReportHistory(uuidFetcher.getUUID(args[0]).replaceAll("-", ""))));
                     }
                 }
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/lookup <Spieler> [<reports>]§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/lookup <Spieler> [<reports>]§c!"));
 
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
     private String output(String name, String uuid) {
         String ban = Ban.getBanTimeLeft(uuid);
 
         if (ban != null) {
-            ban += " Grund: " + Ban.getReason(uuid);
+            ban += "\n§aGrund: §c" + Ban.getReason(uuid);
         } else {
-            ban = "§cNein";
+            ban = "Nein";
         }
 
         Rank rank = HyperiorCore.getRanks().getRank(uuid);
 
         return Main.PREFIX + "§aLookup §6" + name + "§a:" +
                 "\n§aRang: " + rank.getColor() + rank.getName() +
-                "\n§aBan: §6" + ban +
+                "\n§aBan: §c" + ban +
                 "\n§aHistory: §6" + Ban.getHistory(uuid) +
                 "\n§aName History: §6" + uuidFetcher.getNameHistoryFromUUID(uuid) +
                 "\n§aLogins: §6" + Data.getLong("logins", uuid) +

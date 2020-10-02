@@ -35,7 +35,7 @@ public class BanCommand extends Command {
                     if (args[2].equals("d") || args[2].equals("h") || args[2].equals("m") || args[2].equals("s")) {
                         String reason = "";
                         for (int i = 3; i < args.length; i++) {
-                            if (reason == "")
+                            if (reason.equals(""))
                                 reason = args[i];
                             else
                                 reason += " " + args[i];
@@ -43,27 +43,27 @@ public class BanCommand extends Command {
                         if (target != null) {
                             String uuid = target.getUniqueId().toString().replaceAll("-", "");
                             Ban.ban(uuid, target.getName(), sender.getName(), Integer.parseInt(args[1]), args[2], reason);
-                            sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + target.getName() + "§a gebannt. Dauer: §6" + args[1] + args[2] + "§a Grund: §6" + reason));
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + "§a gebannt. Dauer: §6" + args[1] + args[2] + "§a Grund: §6" + reason));
                             Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + "§a gebannt. Dauer: §6" + args[1] + args[2] + "§a Grund: §6" + reason);
-                            target.disconnect(new TextComponent(Ban.getDisconnectReason(uuid)));
+                            target.disconnect(TextComponent.fromLegacyText(Ban.getDisconnectReason(uuid)));
                         } else {
-                            sender.sendMessage(new TextComponent(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
                             if (uuidFetcher.getUUID(args[0]) == null) {
-                                sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
                             } else {
                                 Ban.ban(uuidFetcher.getUUID(args[0]), uuidFetcher.getName(args[0]), sender.getName(), Integer.parseInt(args[1]), args[2], reason);
-                                sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + uuidFetcher.getName(args[0]) + "§a gebannt. Dauer: §6" + args[1] + args[2] + "§a Grund: §6" + reason));
+                                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + uuidFetcher.getName(args[0]) + "§a gebannt. Dauer: §6" + args[1] + args[2] + "§a Grund: §6" + reason));
                                 Team.notify("§6" + sender.getName() + "§a hat §6" + uuidFetcher.getName(args[0]) + "§a gebannt. Dauer: §6" + args[1] + args[2] + "§a Grund: §6" + reason);
                             }
                         }
                     } else
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§cDie Einheit muss d für Tage, h für Stunden, m für Minuten oder s für Sekunden sein!"));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDie Einheit muss d für Tage, h für Stunden, m für Minuten oder s für Sekunden sein!"));
                 } else
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§cDie Dauer muss eine Zahl sein!"));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDie Dauer muss eine Zahl sein!"));
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/ban <Spieler> <Dauer> <d/h/m/s> <Grund>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/ban <Spieler> <Dauer> <d/h/m/s> <Grund>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

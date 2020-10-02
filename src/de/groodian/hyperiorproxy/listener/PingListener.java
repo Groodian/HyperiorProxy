@@ -30,9 +30,9 @@ public class PingListener implements Listener {
 
         // fix wrong format
         if (e.getConnection().getVersion() > 47) {
-            ping.setDescriptionComponent(new TextComponent("§6§lＨ§fＹＰＥＲＩＯＲ．ＤＥ §6§lＳ§fＥＲＶＥＲＮＥＴＺＷＥＲＫ §8» §a1.8§7 - §a1.15.2\n" + plugin.getMotdSecondLine()));
+            ping.setDescriptionComponent(new TextComponent(("§6§lＨ§fＹＰＥＲＩＯＲ．ＤＥ §6§lＳ§fＥＲＶＥＲＮＥＴＺＷＥＲＫ §8» §a1.8§7 - §a1.15.2\n" + plugin.getMotdSecondLine())));
         } else {
-            ping.setDescriptionComponent(new TextComponent("§6§lＨ§fＹＰＥＲＩＯＲ．ＤＥ §6§lＳ§fＥＲＶＥＲＮＥＴＺＷＥＲＫ §a1.8§7-§a1.15\n" + plugin.getMotdSecondLine()));
+            ping.setDescriptionComponent(new TextComponent(("§6§lＨ§fＹＰＥＲＩＯＲ．ＤＥ §6§lＳ§fＥＲＶＥＲＮＥＴＺＷＥＲＫ §a1.8§7-§a1.15\n" + plugin.getMotdSecondLine())));
         }
         ping.setPlayers(players);
         if (plugin.isMaintenance()) {

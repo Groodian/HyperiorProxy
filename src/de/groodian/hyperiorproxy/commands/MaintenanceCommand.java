@@ -29,23 +29,23 @@ public class MaintenanceCommand extends Command {
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("an")) {
                     plugin.setMaintenance(true);
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§aDer Wartungs-Modus ist nun an."));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDer Wartungs-Modus ist nun an."));
                     Team.notify("§6" + sender.getName() + "§a aktiviert den Wartungs-Modus!");
                     for (ProxiedPlayer online : plugin.getProxy().getPlayers()) {
                         if (!HyperiorCore.getRanks().has(online.getUniqueId().toString().replaceAll("-", ""), "maintenance")) {
-                            online.disconnect(new TextComponent("§cDer Server wird nun gewartet!"));
+                            online.disconnect(TextComponent.fromLegacyText("§cDer Server wird nun gewartet!"));
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("aus")) {
                     plugin.setMaintenance(false);
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§aDer Wartungs-Modus ist nun aus."));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDer Wartungs-Modus ist nun aus."));
                     Team.notify("§6" + sender.getName() + "§a deaktiviert den Wartungs-Modus!");
                 } else
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

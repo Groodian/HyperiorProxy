@@ -19,17 +19,17 @@ public class PingCommand extends Command {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
             if (args.length == 0) {
-                player.sendMessage(new TextComponent(PREFIX + "§aDein Ping beträgt §e" + player.getPing() + "ms§a."));
+                player.sendMessage(TextComponent.fromLegacyText(PREFIX + "§aDein Ping beträgt §e" + player.getPing() + "ms§a."));
             } else {
                 ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
                 if (target != null) {
-                    player.sendMessage(new TextComponent(PREFIX + "§e" + target.getName() + "'s §aPing beträgt §e" + target.getPing() + "ms§a."));
+                    player.sendMessage(TextComponent.fromLegacyText(PREFIX + "§e" + target.getName() + "'s §aPing beträgt §e" + target.getPing() + "ms§a."));
                 } else {
-                    player.sendMessage(new TextComponent(PREFIX + "§cDieser Spieler ist nicht online."));
+                    player.sendMessage(TextComponent.fromLegacyText(PREFIX + "§cDieser Spieler ist nicht online."));
                 }
             }
         } else {
-            sender.sendMessage(new TextComponent(PREFIX + "Dieser Befehl muss von einem Spieler ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(PREFIX + "Dieser Befehl muss von einem Spieler ausgeführt werden."));
         }
     }
 

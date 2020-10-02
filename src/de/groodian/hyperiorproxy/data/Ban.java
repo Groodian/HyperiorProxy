@@ -18,14 +18,16 @@ public class Ban {
     private static final MySQL dataMySQL = HyperiorCore.getMySQLManager().getDataMySQL();
 
     public static boolean hasActiveBan(String uuid) {
+        uuid = uuid.replaceAll("-", "");
         if (isInDatabase(uuid)) {
-            if (Ban.getString("ban", uuid) != null) {
+            String ban = getString("ban", uuid);
+            if (ban != null) {
 
-                if (Ban.getString("ban", uuid).equals("PERMANENT")) {
+                if (ban.equals("PERMANENT")) {
                     return true;
                 }
 
-                Duration duration = Duration.between(LocalDateTime.now(), LocalDateTime.parse(Ban.getString("ban", uuid), dateTimeFormatter));
+                Duration duration = Duration.between(LocalDateTime.now(), LocalDateTime.parse(ban, dateTimeFormatter));
 
                 if (duration.isZero()) {
                     return false;
@@ -44,6 +46,7 @@ public class Ban {
     }
 
     public static String getDisconnectReason(String uuid) {
+        uuid = uuid.replaceAll("-", "");
         String banTimeLeft = getBanTimeLeft(uuid);
         if (banTimeLeft != null) {
 
@@ -60,6 +63,7 @@ public class Ban {
     }
 
     public static String getBanTimeLeft(String uuid) {
+        uuid = uuid.replaceAll("-", "");
         if (hasActiveBan(uuid)) {
             String ban = getString("ban", uuid);
 
@@ -125,19 +129,19 @@ public class Ban {
                 ps.setString(1, targetName);
                 if (type.equals(DAYS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusDays(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "d. Grund: " + reason);
+                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "d. Grund: " + reason);
                 }
                 if (type.equals(HOURS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusHours(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "h. Grund: " + reason);
+                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "h. Grund: " + reason);
                 }
                 if (type.equals(MINUTES)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusMinutes(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "m. Grund: " + reason);
+                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "m. Grund: " + reason);
                 }
                 if (type.equals(SECONDS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusSeconds(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "s. Grund: " + reason);
+                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "s. Grund: " + reason);
                 }
                 ps.setString(3, reason);
                 ps.setString(5, targetUUID);
@@ -153,19 +157,19 @@ public class Ban {
                 ps.setString(4, reason);
                 if (type.equals(DAYS)) {
                     ps.setString(3, dateTimeFormatter.format(LocalDateTime.now().plusDays(duration)));
-                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "d. Grund: " + reason);
+                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "d. Grund: " + reason);
                 }
                 if (type.equals(HOURS)) {
                     ps.setString(3, dateTimeFormatter.format(LocalDateTime.now().plusHours(duration)));
-                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "h. Grund: " + reason);
+                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "h. Grund: " + reason);
                 }
                 if (type.equals(MINUTES)) {
                     ps.setString(3, dateTimeFormatter.format(LocalDateTime.now().plusMinutes(duration)));
-                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "m. Grund: " + reason);
+                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "m. Grund: " + reason);
                 }
                 if (type.equals(SECONDS)) {
                     ps.setString(3, dateTimeFormatter.format(LocalDateTime.now().plusSeconds(duration)));
-                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " f§r " + duration + "s. Grund: " + reason);
+                    ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "s. Grund: " + reason);
                 }
                 ps.executeUpdate();
             } catch (SQLException e) {
@@ -288,6 +292,7 @@ public class Ban {
     }
 
     private static String getString(String data, String uuid) {
+        uuid = uuid.replaceAll("-", "");
         if (isInDatabase(uuid)) {
             try {
                 PreparedStatement ps = dataMySQL.getConnection().prepareStatement("SELECT " + data + " FROM ban WHERE UUID = ?");
@@ -305,6 +310,7 @@ public class Ban {
     }
 
     private static long getLong(String data, String uuid) {
+        uuid = uuid.replaceAll("-", "");
         if (isInDatabase(uuid)) {
             try {
                 PreparedStatement ps = dataMySQL.getConnection().prepareStatement("SELECT " + data + " FROM ban WHERE UUID = ?");

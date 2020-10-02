@@ -12,7 +12,7 @@ public class HelpCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(new TextComponent("§7[§bHyperior.de§7] §6Informationen zum Hyperior-Netzwerk:" +
+        sender.sendMessage(TextComponent.fromLegacyText("§7[§bHyperior.de§7] §6Informationen zum Hyperior-Netzwerk:" +
                 "\n§e/lobby §7Kehre zur Hauptlobby zurück" +
                 "\n§e/party §7Spiele mit Freunden in einer Party" +
                 "\n§e/friend §7Verwalte deine Freunde" +

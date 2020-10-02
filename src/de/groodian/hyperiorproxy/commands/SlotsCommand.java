@@ -27,11 +27,11 @@ public class SlotsCommand extends Command {
             }
             if (args.length == 1) {
                 plugin.setSlots(Integer.parseInt(args[0]));
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§aSlots erfolgreich geändert."));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aSlots erfolgreich geändert."));
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/slots <Slots>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/slots <Slots>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

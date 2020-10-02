@@ -42,31 +42,31 @@ public class UnbanCommand extends Command {
                     String uuid = target.getUniqueId().toString().replaceAll("-", "");
                     if (Ban.hasActiveBan(uuid)) {
                         Ban.unban(uuid, target.getName(), sender.getName(), reason);
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aentbannt. Grund: §6" + reason));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aentbannt. Grund: §6" + reason));
                         Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + " §aentbannt. Grund: §6" + reason);
                     } else {
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
                     }
                 } else {
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
                     String tempUUID = uuidFetcher.getUUID(args[0]);
                     String tempName = uuidFetcher.getName(args[0]);
                     if (tempUUID == null) {
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
                     } else {
                         if (Ban.hasActiveBan(tempUUID)) {
                             Ban.unban(tempUUID, tempName, sender.getName(), reason);
-                            sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + tempName + " §aentbannt. Grund: §6" + reason));
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + tempName + " §aentbannt. Grund: §6" + reason));
                             Team.notify("§6" + sender.getName() + "§a hat §6" + tempName + " §aentbannt. Grund: §6" + reason);
                         } else {
-                            sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
                         }
                     }
                 }
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/unban <Spieler> <Grund>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/unban <Spieler> <Grund>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

@@ -21,7 +21,7 @@ public class JoinListener implements Listener {
                     return;
                 }
             }
-            e.getPlayer().disconnect(new TextComponent(Main.DISCONNECT_HEADER + "§cEs konnte keine Lobby gefunden werden! Versuche es später nochmal."));
+            e.getPlayer().disconnect(TextComponent.fromLegacyText(Main.DISCONNECT_HEADER + "§cEs konnte keine Lobby gefunden werden! Versuche es später nochmal."));
         }
     }
 

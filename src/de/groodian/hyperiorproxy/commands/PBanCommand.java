@@ -33,7 +33,7 @@ public class PBanCommand extends Command {
                 ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
                 String reason = "";
                 for (int i = 1; i < args.length; i++) {
-                    if (reason == "")
+                    if (reason.equals(""))
                         reason = args[i];
                     else
                         reason += " " + args[i];
@@ -41,24 +41,24 @@ public class PBanCommand extends Command {
                 if (target != null) {
                     String uuid = target.getUniqueId().toString().replaceAll("-", "");
                     Ban.pban(uuid, target.getName(), sender.getName(), reason);
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + target.getName() + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason));
                     Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason);
-                    target.disconnect(new TextComponent(Ban.getDisconnectReason(uuid)));
+                    target.disconnect(TextComponent.fromLegacyText(Ban.getDisconnectReason(uuid)));
                 } else {
-                    sender.sendMessage(new TextComponent(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
                     if (uuidFetcher.getUUID(args[0]) == null) {
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
                     } else {
                         String tempName = uuidFetcher.getName(args[0]);
                         Ban.pban(uuidFetcher.getUUID(args[0]), tempName, sender.getName(), reason);
-                        sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + tempName + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason));
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + tempName + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason));
                         Team.notify("§6" + sender.getName() + "§a hat §6" + tempName + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason);
                     }
                 }
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/pban <Spieler> <Grund>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/pban <Spieler> <Grund>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

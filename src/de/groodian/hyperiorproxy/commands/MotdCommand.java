@@ -32,11 +32,11 @@ public class MotdCommand extends Command {
                     message += args[i] + " ";
                 }
                 plugin.setMotdSecondLine(ChatColor.translateAlternateColorCodes('&', message));
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§aMotd erfolgreich geändert."));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aMotd erfolgreich geändert."));
             } else
-                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/motd <motd>§c!"));
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/motd <motd>§c!"));
         } else
-            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }
