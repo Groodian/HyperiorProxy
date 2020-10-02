@@ -18,8 +18,8 @@ public class ProxyClient extends Client {
         String header = dataPackage.get(0).toString();
         if (header.equalsIgnoreCase("CONNECTED")) {
             String id = dataPackage.get(1).toString() + "-" + dataPackage.get(2);
-            System.out.println(dataPackage.get(3).toString() + ":" + dataPackage.get(4));
-            ServerInfo serverInfo = ProxyServer.getInstance().constructServerInfo(id, InetSocketAddress.createUnresolved(dataPackage.get(3).toString(), (int) dataPackage.get(4)), id, false);
+            InetSocketAddress address = new InetSocketAddress(dataPackage.get(3).toString(), (int) dataPackage.get(4));
+            ServerInfo serverInfo = ProxyServer.getInstance().constructServerInfo(id, address, "", false);
             ProxyServer.getInstance().getServers().put(id, serverInfo);
         } else if (header.equalsIgnoreCase("DISCONNECTED")) {
             String id = dataPackage.get(1).toString() + (int) dataPackage.get(2);

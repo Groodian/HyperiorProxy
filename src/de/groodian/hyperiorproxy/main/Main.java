@@ -21,12 +21,14 @@ import de.groodian.hyperiorproxy.listener.PingListener;
 import de.groodian.hyperiorproxy.network.ProxyClient;
 import de.groodian.network.DataPackage;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 
 public class Main extends Plugin {
 
     public static final String PREFIX = "§bHyperiorCloud §7>> §r";
+    public static final String DISCONNECT_HEADER = "§6§lH§fYPERIOR.DE §6§lS§fERVERNETZWERK\n\n";
 
     private boolean maintenance;
     private String motdSecondLine;
@@ -36,7 +38,7 @@ public class Main extends Plugin {
 
     @Override
     public void onEnable() {
-        BungeeCord.getInstance().getConsole().sendMessage(PREFIX + "§aDas Plugin wird geladen....");
+        BungeeCord.getInstance().getConsole().sendMessage(new TextComponent(PREFIX + "§aDas Plugin wird geladen...."));
 
         setMaintenance(true);
         setMotdSecondLine("§c§oDieses Netzwerk ist aktuell in der Beta.");
@@ -45,16 +47,16 @@ public class Main extends Plugin {
 
         client = new ProxyClient("localhost", 4444, new DataPackage("LOGIN", "Bungeecord", 1));
 
-        BungeeCord.getInstance().getConsole().sendMessage(PREFIX + "§aGeladen!");
+        BungeeCord.getInstance().getConsole().sendMessage(new TextComponent(PREFIX + "§aGeladen!"));
     }
 
     @Override
     public void onDisable() {
-        BungeeCord.getInstance().getConsole().sendMessage(PREFIX + "§cDas Plugin wird gestoppt....");
+        BungeeCord.getInstance().getConsole().sendMessage(new TextComponent(PREFIX + "§cDas Plugin wird gestoppt...."));
 
         client.stop();
 
-        BungeeCord.getInstance().getConsole().sendMessage(PREFIX + "§cGestoppt!");
+        BungeeCord.getInstance().getConsole().sendMessage(new TextComponent(PREFIX + "§cGestoppt!"));
     }
 
     private void init(PluginManager pluginManager) {

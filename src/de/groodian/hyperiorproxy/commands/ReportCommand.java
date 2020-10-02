@@ -5,6 +5,7 @@ import de.groodian.hyperiorproxy.main.Main;
 import de.groodian.hyperiorproxy.team.Team;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -31,7 +32,7 @@ public class ReportCommand extends Command {
                 ProxiedPlayer player = (ProxiedPlayer) sender;
                 String reason = "";
                 for (int i = 1; i < args.length; i++) {
-                    if (reason == "")
+                    if (reason.equals(""))
                         reason = args[i];
                     else
                         reason += " " + args[i];
@@ -43,7 +44,7 @@ public class ReportCommand extends Command {
                             tempList.add(player.getUniqueId().toString());
                             reported.put(target.getUniqueId().toString(), tempList);
                             Ban.report(target.getUniqueId().toString().replaceAll("-", ""), target.getName(), sender.getName(), reason);
-                            sender.sendMessage(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aerfolgreich reportet.");
+                            sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aerfolgreich reportet."));
                             Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + " §areportet. Grund: §6" + reason + " §aServer: §6" + target.getServer().getInfo().getName());
                         } else {
                             if (!reported.get(target.getUniqueId().toString()).contains(player.getUniqueId().toString())) {
@@ -51,22 +52,22 @@ public class ReportCommand extends Command {
                                 tempList.add(player.getUniqueId().toString());
                                 reported.put(target.getUniqueId().toString(), tempList);
                                 Ban.report(target.getUniqueId().toString().replaceAll("-", ""), target.getName(), sender.getName(), reason);
-                                sender.sendMessage(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aerfolgreich reportet.");
+                                sender.sendMessage(new TextComponent(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aerfolgreich reportet."));
                                 Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + " §areportet. Grund: §6" + reason + " §aServer: §6" + target.getServer().getInfo().getName());
                             } else {
-                                sender.sendMessage(Main.PREFIX + "§cDu hast diesen Spieler bereits reportet!");
+                                sender.sendMessage(new TextComponent(Main.PREFIX + "§cDu hast diesen Spieler bereits reportet!"));
                             }
                         }
                     } else {
-                        sender.sendMessage(Main.PREFIX + "§cDu kannst dich nicht selber reporten!");
+                        sender.sendMessage(new TextComponent(Main.PREFIX + "§cDu kannst dich nicht selber reporten!"));
                     }
                 } else {
-                    sender.sendMessage(Main.PREFIX + "§cDieser Spieler ist nicht Online!");
+                    sender.sendMessage(new TextComponent(Main.PREFIX + "§cDieser Spieler ist nicht Online!"));
                 }
             } else
-                sender.sendMessage(Main.PREFIX + "§cBenutze §6/report <Spieler> <Grund>§c!");
+                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/report <Spieler> <Grund>§c!"));
         } else
-            sender.sendMessage(REPORT_PREFIX + "Dieser Befehl muss von einem Spieler ausgeführt werden.");
+            sender.sendMessage(new TextComponent(REPORT_PREFIX + "Dieser Befehl muss von einem Spieler ausgeführt werden."));
     }
 
     public static void removeReported(String uuid) {

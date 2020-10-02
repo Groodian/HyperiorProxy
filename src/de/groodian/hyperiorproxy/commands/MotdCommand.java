@@ -4,6 +4,7 @@ import de.groodian.hyperiorcore.main.HyperiorCore;
 import de.groodian.hyperiorproxy.main.Main;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.command.ConsoleCommandSender;
@@ -14,6 +15,7 @@ public class MotdCommand extends Command {
 
     public MotdCommand(Main plugin) {
         super("motd");
+        this.plugin = plugin;
     }
 
     @Override
@@ -30,11 +32,11 @@ public class MotdCommand extends Command {
                     message += args[i] + " ";
                 }
                 plugin.setMotdSecondLine(ChatColor.translateAlternateColorCodes('&', message));
-                sender.sendMessage(Main.PREFIX + "§aMotd erfolgreich geändert.");
+                sender.sendMessage(new TextComponent(Main.PREFIX + "§aMotd erfolgreich geändert."));
             } else
-                sender.sendMessage(Main.PREFIX + "§cBenutze §6/motd <motd>§c!");
+                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/motd <motd>§c!"));
         } else
-            sender.sendMessage(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden.");
+            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

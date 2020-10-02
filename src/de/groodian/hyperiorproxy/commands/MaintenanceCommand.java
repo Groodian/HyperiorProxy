@@ -29,7 +29,7 @@ public class MaintenanceCommand extends Command {
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("an")) {
                     plugin.setMaintenance(true);
-                    sender.sendMessage(Main.PREFIX + "§aDer Wartungs-Modus ist nun an.");
+                    sender.sendMessage(new TextComponent(Main.PREFIX + "§aDer Wartungs-Modus ist nun an."));
                     Team.notify("§6" + sender.getName() + "§a aktiviert den Wartungs-Modus!");
                     for (ProxiedPlayer online : plugin.getProxy().getPlayers()) {
                         if (!HyperiorCore.getRanks().has(online.getUniqueId().toString().replaceAll("-", ""), "maintenance")) {
@@ -38,14 +38,14 @@ public class MaintenanceCommand extends Command {
                     }
                 } else if (args[0].equalsIgnoreCase("aus")) {
                     plugin.setMaintenance(false);
-                    sender.sendMessage(Main.PREFIX + "§aDer Wartungs-Modus ist nun aus.");
+                    sender.sendMessage(new TextComponent(Main.PREFIX + "§aDer Wartungs-Modus ist nun aus."));
                     Team.notify("§6" + sender.getName() + "§a deaktiviert den Wartungs-Modus!");
                 } else
-                    sender.sendMessage(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!");
+                    sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
             } else
-                sender.sendMessage(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!");
+                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
         } else
-            sender.sendMessage(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden.");
+            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 
 }

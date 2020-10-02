@@ -5,6 +5,7 @@ import de.groodian.hyperiorproxy.main.Main;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.command.ConsoleCommandSender;
@@ -28,10 +29,10 @@ public class BroadcastCommand extends Command {
                 for (int i = 0; i < args.length; i++) {
                     message += args[i] + " ";
                 }
-                ProxyServer.getInstance().broadcast(ChatColor.translateAlternateColorCodes('&', message));
+                ProxyServer.getInstance().broadcast(new TextComponent(ChatColor.translateAlternateColorCodes('&', message)));
             } else
-                sender.sendMessage(Main.PREFIX + "§cBenutze §6/broadcast <Nachricht>§c!");
+                sender.sendMessage(new TextComponent(Main.PREFIX + "§cBenutze §6/broadcast <Nachricht>§c!"));
         } else
-            sender.sendMessage(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden.");
+            sender.sendMessage(new TextComponent(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
     }
 }
