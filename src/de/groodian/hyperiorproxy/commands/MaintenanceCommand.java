@@ -32,7 +32,7 @@ public class MaintenanceCommand extends Command {
                     sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDer Wartungs-Modus ist nun an."));
                     Team.notify("§6" + sender.getName() + "§a aktiviert den Wartungs-Modus!");
                     for (ProxiedPlayer online : plugin.getProxy().getPlayers()) {
-                        if (!HyperiorCore.getRanks().has(online.getUniqueId().toString().replaceAll("-", ""), "maintenance")) {
+                        if (!HyperiorCore.getRanks().has(online.getUniqueId(), "maintenance")) {
                             online.disconnect(TextComponent.fromLegacyText("§cDer Server wird nun gewartet!"));
                         }
                     }

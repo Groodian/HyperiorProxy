@@ -2,6 +2,7 @@ package de.groodian.hyperiorproxy.commands;
 
 import de.groodian.hyperiorcore.main.HyperiorCore;
 import de.groodian.hyperiorproxy.main.Main;
+import de.groodian.hyperiorproxy.team.Team;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -26,8 +27,13 @@ public class SlotsCommand extends Command {
                 }
             }
             if (args.length == 1) {
-                plugin.setSlots(Integer.parseInt(args[0]));
-                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aSlots erfolgreich geändert."));
+                if (args[0].chars().allMatch(Character::isDigit)) {
+                    int slots = Integer.parseInt(args[0]);
+                    plugin.setSlots(slots);
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aSlots erfolgreich geändert."));
+                    Team.notify("§6" + sender.getName() + "§a hat die Slots auf §6" + slots + "§a gesetzt!");
+                } else
+                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDie Slots müssen eine Zahl sein!"));
             } else
                 sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/slots <Slots>§c!"));
         } else

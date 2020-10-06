@@ -7,6 +7,7 @@ import de.groodian.hyperiorproxy.main.Main;
 import de.groodian.hyperiorproxy.team.Team;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -14,15 +15,17 @@ import net.md_5.bungee.command.ConsoleCommandSender;
 
 public class UnbanCommand extends Command {
 
+    private Main plugin;
     private UUIDFetcher uuidFetcher;
 
-    public UnbanCommand() {
+    public UnbanCommand(Main plugin) {
         super("unban");
+        this.plugin = plugin;
         uuidFetcher = new UUIDFetcher();
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(final CommandSender sender, final String[] args) {
         if (sender instanceof ProxiedPlayer || sender instanceof ConsoleCommandSender) {
             if (sender instanceof ProxiedPlayer) {
                 if (!HyperiorCore.getRanks().has(((ProxiedPlayer) sender).getUniqueId(), "unban")) {
@@ -30,39 +33,46 @@ public class UnbanCommand extends Command {
                 }
             }
             if (args.length >= 2) {
-                ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
-                String reason = "";
+                final ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
+                StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 1; i < args.length; i++) {
-                    if (reason.equals(""))
-                        reason = args[i];
+                    if (stringBuilder.length() == 0)
+                        stringBuilder.append(args[i]);
                     else
-                        reason += " " + args[i];
+                        stringBuilder.append(" ").append(args[i]);
                 }
-                if (target != null) {
-                    String uuid = target.getUniqueId().toString().replaceAll("-", "");
-                    if (Ban.hasActiveBan(uuid)) {
-                        Ban.unban(uuid, target.getName(), sender.getName(), reason);
-                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aentbannt. Grund: §6" + reason));
-                        Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + " §aentbannt. Grund: §6" + reason);
-                    } else {
-                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
-                    }
-                } else {
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
-                    String tempUUID = uuidFetcher.getUUID(args[0]);
-                    String tempName = uuidFetcher.getName(args[0]);
-                    if (tempUUID == null) {
-                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
-                    } else {
-                        if (Ban.hasActiveBan(tempUUID)) {
-                            Ban.unban(tempUUID, tempName, sender.getName(), reason);
-                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + tempName + " §aentbannt. Grund: §6" + reason));
-                            Team.notify("§6" + sender.getName() + "§a hat §6" + tempName + " §aentbannt. Grund: §6" + reason);
+                final String reason = stringBuilder.toString();
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Bitte warte, dies kann einen moment dauern."));
+
+                ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> {
+
+                    if (target != null) {
+                        String uuid = target.getUniqueId().toString().replaceAll("-", "");
+                        if (Ban.hasActiveBan(uuid)) {
+                            Ban.unban(uuid, target.getName(), sender.getName(), reason);
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aentbannt. Grund: §6" + reason));
+                            Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + " §aentbannt. Grund: §6" + reason);
                         } else {
                             sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
                         }
+                    } else {
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
+                        UUIDFetcher.Result result = uuidFetcher.getNameAndUUIDFromName(args[0]);
+                        if (result == null) {
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                        } else {
+                            if (Ban.hasActiveBan(result.getUUID())) {
+                                Ban.unban(result.getUUID(), result.getName(), sender.getName(), reason);
+                                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + result.getName() + " §aentbannt. Grund: §6" + reason));
+                                Team.notify("§6" + sender.getName() + "§a hat §6" + result.getName() + " §aentbannt. Grund: §6" + reason);
+                            } else {
+                                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
+                            }
+                        }
                     }
-                }
+
+                });
+
             } else
                 sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/unban <Spieler> <Grund>§c!"));
         } else

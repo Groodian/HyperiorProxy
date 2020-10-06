@@ -25,11 +25,11 @@ public class BroadcastCommand extends Command {
                 }
             }
             if (args.length >= 1) {
-                String message = "";
-                for (int i = 0; i < args.length; i++) {
-                    message += args[i] + " ";
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String arg : args) {
+                    stringBuilder.append(arg).append(" ");
                 }
-                ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', message)));
+                ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', stringBuilder.toString())));
             } else
                 sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/broadcast <Nachricht>§c!"));
         } else

@@ -23,12 +23,14 @@ public class ProxyClient extends Client {
             ProxyServer.getInstance().getServers().put(id, serverInfo);
         } else if (header.equalsIgnoreCase("DISCONNECTED")) {
             String id = dataPackage.get(1).toString() + (int) dataPackage.get(2);
-            if (ProxyServer.getInstance().getServers().containsKey(id)) {
-                ProxyServer.getInstance().getServers().remove(id);
-            }
+            ProxyServer.getInstance().getServers().remove(id);
         } else {
             System.out.println("[Client] Unknown header: " + header);
         }
+    }
+
+    @Override
+    protected void onSuccessfulLogin() {
     }
 
 }

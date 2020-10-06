@@ -10,8 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 public class ShopCommand extends Command {
 
+    private static final long DELAY = 900;
+
     private Main plugin;
-    private long delay = 900;
 
     public ShopCommand(Main plugin) {
         super("shop");
@@ -32,22 +33,22 @@ public class ShopCommand extends Command {
                         ProxyServer.getInstance().getScheduler().schedule(plugin, () -> {
                             sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Du kannst dir bei der §Täglichen Belohnung§ die §edreifache Anzahl an §6Coins §7abhohlen."));
                             ProxyServer.getInstance().getScheduler().schedule(plugin, () -> {
-                                sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Du erh§lst am Ende einer Runde §edoppelte §6Coins§7."));
+                                sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Du erhältst am Ende einer Runde §edoppelte §6Coins§7."));
                                 ProxyServer.getInstance().getScheduler().schedule(plugin, () -> {
-                                    sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Du kannst eine Runde mit /start §adirekt Starten§7."));
+                                    sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Du kannst eine Runde mit §a/start direkt Starten§7."));
                                     ProxyServer.getInstance().getScheduler().schedule(plugin, () -> {
                                         sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Du kannst dir §aalle Gegenstände kaufen§7 so brauchst du nicht das Glück diese ein einer Kiste zu bekommen."));
                                         ProxyServer.getInstance().getScheduler().schedule(plugin, () -> {
                                             sender.sendMessage(TextComponent.fromLegacyText("§8§ §aMit dem Kauf unterstützt du den Server, und trägst bei das neue Updates kommen und der Server weiterhin Online bleibt."));
-                                            ProxyServer.getInstance().getScheduler().schedule(plugin, () -> sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Für weitere Informationen kannst du dich an das Server-Team wenden.")), delay, TimeUnit.MILLISECONDS);
-                                        }, delay, TimeUnit.MILLISECONDS);
-                                    }, delay, TimeUnit.MILLISECONDS);
-                                }, delay, TimeUnit.MILLISECONDS);
-                            }, delay, TimeUnit.MILLISECONDS);
-                        }, delay, TimeUnit.MILLISECONDS);
-                    }, delay, TimeUnit.MILLISECONDS);
-                }, delay, TimeUnit.MILLISECONDS);
-            }, delay, TimeUnit.MILLISECONDS);
-        }, delay, TimeUnit.MILLISECONDS);
+                                            ProxyServer.getInstance().getScheduler().schedule(plugin, () -> sender.sendMessage(TextComponent.fromLegacyText("§8§ §7Für weitere Informationen kannst du dich an das Server-Team wenden.")), DELAY, TimeUnit.MILLISECONDS);
+                                        }, DELAY, TimeUnit.MILLISECONDS);
+                                    }, DELAY, TimeUnit.MILLISECONDS);
+                                }, DELAY, TimeUnit.MILLISECONDS);
+                            }, DELAY, TimeUnit.MILLISECONDS);
+                        }, DELAY, TimeUnit.MILLISECONDS);
+                    }, DELAY, TimeUnit.MILLISECONDS);
+                }, DELAY, TimeUnit.MILLISECONDS);
+            }, DELAY, TimeUnit.MILLISECONDS);
+        }, DELAY, TimeUnit.MILLISECONDS);
     }
 }

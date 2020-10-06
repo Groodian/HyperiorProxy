@@ -125,23 +125,24 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
+                String history = getString("history", targetUUID);
                 PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 if (type.equals(DAYS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusDays(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "d. Grund: " + reason);
+                    ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "d. Grund: " + reason);
                 }
                 if (type.equals(HOURS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusHours(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "h. Grund: " + reason);
+                    ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "h. Grund: " + reason);
                 }
                 if (type.equals(MINUTES)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusMinutes(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "m. Grund: " + reason);
+                    ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "m. Grund: " + reason);
                 }
                 if (type.equals(SECONDS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusSeconds(duration)));
-                    ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "s. Grund: " + reason);
+                    ps.setString(4, ((history == null) ? "" : history + "\n") + "(" +dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "s. Grund: " + reason);
                 }
                 ps.setString(3, reason);
                 ps.setString(5, targetUUID);
@@ -182,10 +183,11 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
+                String history = getString("history", targetUUID);
                 PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 ps.setString(2, "PERMANENT");
-                ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") PBAN von " + executorName + ". Grund: " + reason);
+                ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") PBAN von " + executorName + ". Grund: " + reason);
                 ps.setString(3, reason);
                 ps.setString(5, targetUUID);
                 ps.executeUpdate();
@@ -211,10 +213,11 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
+                String history = getString("history", targetUUID);
                 PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 ps.setString(2, null);
-                ps.setString(4, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") UNBAN von " + executorName + ". Grund: " + reason);
+                ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") UNBAN von " + executorName + ". Grund: " + reason);
                 ps.setString(3, reason);
                 ps.setString(5, targetUUID);
                 ps.executeUpdate();
@@ -228,9 +231,10 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
+                String history = getString("history", targetUUID);
                 PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
-                ps.setString(3, getString("history", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") KICK von " + executorName + ". Grund: " + reason);
+                ps.setString(3, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") KICK von " + executorName + ". Grund: " + reason);
                 ps.setString(2, reason);
                 ps.setString(4, targetUUID);
                 ps.executeUpdate();
@@ -255,9 +259,10 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
+                String reportHistory = getString("reporthistory", targetUUID);
                 PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, reports = ?, reporthistory = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
-                ps.setString(3, getString("reporthistory", targetUUID) + "\n(" + dateTimeFormatter.format(LocalDateTime.now()) + ") REPORT von " + executorName + ". Grund: " + reason);
+                ps.setString(3, ((reportHistory == null) ? "" : reportHistory + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") REPORT von " + executorName + ". Grund: " + reason);
                 ps.setLong(2, getLong("reports", targetUUID) + 1);
                 ps.setString(4, targetUUID);
                 ps.executeUpdate();

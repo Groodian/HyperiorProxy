@@ -2,6 +2,7 @@ package de.groodian.hyperiorproxy.commands;
 
 import de.groodian.hyperiorcore.main.HyperiorCore;
 import de.groodian.hyperiorproxy.main.Main;
+import de.groodian.hyperiorproxy.team.Team;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,12 +28,15 @@ public class MotdCommand extends Command {
                 }
             }
             if (args.length >= 1) {
-                String message = "";
-                for (int i = 0; i < args.length; i++) {
-                    message += args[i] + " ";
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String arg : args) {
+                    stringBuilder.append(arg).append(" ");
                 }
-                plugin.setMotdSecondLine(ChatColor.translateAlternateColorCodes('&', message));
+                String motd = ChatColor.translateAlternateColorCodes('&', stringBuilder.toString());
+                motd = motd.substring(0, motd.length() - 1);
+                plugin.setMotdSecondLine(motd);
                 sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aMotd erfolgreich geändert."));
+                Team.notify("§6" + sender.getName() + "§a hat den Motd zu \"§r" + motd + "§a\" geändert!");
             } else
                 sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/motd <motd>§c!"));
         } else

@@ -7,6 +7,7 @@ import de.groodian.hyperiorproxy.main.Main;
 import de.groodian.hyperiorproxy.team.Team;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -14,15 +15,17 @@ import net.md_5.bungee.command.ConsoleCommandSender;
 
 public class PBanCommand extends Command {
 
+    private Main plugin;
     private UUIDFetcher uuidFetcher;
 
-    public PBanCommand() {
+    public PBanCommand(Main plugin) {
         super("pban");
+        this.plugin = plugin;
         uuidFetcher = new UUIDFetcher();
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(final CommandSender sender, final String[] args) {
         if (sender instanceof ProxiedPlayer || sender instanceof ConsoleCommandSender) {
             if (sender instanceof ProxiedPlayer) {
                 if (!HyperiorCore.getRanks().has(((ProxiedPlayer) sender).getUniqueId(), "pban")) {
@@ -30,31 +33,39 @@ public class PBanCommand extends Command {
                 }
             }
             if (args.length >= 2) {
-                ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
-                String reason = "";
+                final ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
+                StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 1; i < args.length; i++) {
-                    if (reason.equals(""))
-                        reason = args[i];
+                    if (stringBuilder.length() == 0)
+                        stringBuilder.append(args[i]);
                     else
-                        reason += " " + args[i];
+                        stringBuilder.append(" ").append(args[i]);
                 }
-                if (target != null) {
-                    String uuid = target.getUniqueId().toString().replaceAll("-", "");
-                    Ban.pban(uuid, target.getName(), sender.getName(), reason);
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason));
-                    Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason);
-                    target.disconnect(TextComponent.fromLegacyText(Ban.getDisconnectReason(uuid)));
-                } else {
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
-                    if (uuidFetcher.getUUID(args[0]) == null) {
-                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                final String reason = stringBuilder.toString();
+                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Bitte warte, dies kann einen moment dauern."));
+
+                ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> {
+
+                    if (target != null) {
+                        String uuid = target.getUniqueId().toString().replaceAll("-", "");
+                        Ban.pban(uuid, target.getName(), sender.getName(), reason);
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + "§a gebannt. Dauer: §6PERMANENT §aGrund: §6" + reason));
+                        Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + "§a gebannt. Dauer: §6PERMANENT §aGrund: §6" + reason);
+                        target.disconnect(TextComponent.fromLegacyText(Ban.getDisconnectReason(uuid)));
                     } else {
-                        String tempName = uuidFetcher.getName(args[0]);
-                        Ban.pban(uuidFetcher.getUUID(args[0]), tempName, sender.getName(), reason);
-                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + tempName + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason));
-                        Team.notify("§6" + sender.getName() + "§a hat §6" + tempName + "§a gebannt. Dauer: §6PERMANENT §a Grund: §6" + reason);
+                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
+                        UUIDFetcher.Result result = uuidFetcher.getNameAndUUIDFromName(args[0]);
+                        if (result == null) {
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
+                        } else {
+                            Ban.pban(result.getUUID(), result.getName(), sender.getName(), reason);
+                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + result.getName() + "§a gebannt. Dauer: §6PERMANENT §aGrund: §6" + reason));
+                            Team.notify("§6" + sender.getName() + "§a hat §6" + result.getName() + "§a gebannt. Dauer: §6PERMANENT §aGrund: §6" + reason);
+                        }
                     }
-                }
+
+                });
+
             } else
                 sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/pban <Spieler> <Grund>§c!"));
         } else

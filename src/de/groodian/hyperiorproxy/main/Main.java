@@ -19,6 +19,7 @@ import de.groodian.hyperiorproxy.listener.DisconnectListener;
 import de.groodian.hyperiorproxy.listener.JoinListener;
 import de.groodian.hyperiorproxy.listener.PingListener;
 import de.groodian.hyperiorproxy.network.ProxyClient;
+import de.groodian.hyperiorproxy.team.Team;
 import de.groodian.network.DataPackage;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -27,7 +28,7 @@ import net.md_5.bungee.api.plugin.PluginManager;
 
 public class Main extends Plugin {
 
-    public static final String PREFIX = "§bHyperiorCloud §7>> §r";
+    public static final String PREFIX = "§7[§bHyperiorCloud§7] §r";
     public static final String DISCONNECT_HEADER = "§6§lH§f§lYPERIOR.DE §6§lS§f§lERVERNETZWERK\n\n";
 
     private boolean maintenance;
@@ -36,10 +37,13 @@ public class Main extends Plugin {
 
     private ProxyClient client;
 
+    private ReportCommand report;
+
     @Override
     public void onEnable() {
         BungeeCord.getInstance().getConsole().sendMessage(TextComponent.fromLegacyText(PREFIX + "§aDas Plugin wird geladen...."));
 
+        Team.init(this);
         setMaintenance(true);
         setMotdSecondLine("§c§oDieses Netzwerk ist aktuell in der Beta.");
         setSlots(50);
@@ -63,12 +67,13 @@ public class Main extends Plugin {
         pluginManager.registerCommand(this, new BroadcastCommand());
         pluginManager.registerCommand(this, new MaintenanceCommand(this));
         pluginManager.registerCommand(this, new LobbyCommand());
-        pluginManager.registerCommand(this, new BanCommand());
-        pluginManager.registerCommand(this, new LookupCommand());
-        pluginManager.registerCommand(this, new UnbanCommand());
-        pluginManager.registerCommand(this, new KickCommand());
-        pluginManager.registerCommand(this, new PBanCommand());
-        pluginManager.registerCommand(this, new ReportCommand());
+        pluginManager.registerCommand(this, new BanCommand(this));
+        pluginManager.registerCommand(this, new LookupCommand(this));
+        pluginManager.registerCommand(this, new UnbanCommand(this));
+        pluginManager.registerCommand(this, new KickCommand(this));
+        pluginManager.registerCommand(this, new PBanCommand(this));
+        report = new ReportCommand(this);
+        pluginManager.registerCommand(this, report);
         pluginManager.registerCommand(this, new PingCommand());
         pluginManager.registerCommand(this, new HelpCommand());
         pluginManager.registerCommand(this, new ShopCommand(this));
@@ -79,10 +84,6 @@ public class Main extends Plugin {
         pluginManager.registerListener(this, new DisconnectListener(this));
         pluginManager.registerListener(this, new PingListener(this));
         pluginManager.registerListener(this, new JoinListener());
-    }
-
-    public ProxyClient getClient() {
-        return client;
     }
 
     public boolean isMaintenance() {
@@ -109,4 +110,7 @@ public class Main extends Plugin {
         this.slots = slots;
     }
 
+    public ReportCommand getReport() {
+        return report;
+    }
 }

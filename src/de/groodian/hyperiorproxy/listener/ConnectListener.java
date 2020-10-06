@@ -26,10 +26,10 @@ public class ConnectListener implements Listener {
     // das Event noch nicht abgebrochen erst dann wird die Methode connect()
     // aufgerufen.
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void handleConnect(LoginEvent e) {
+    public void handleConnect(final LoginEvent e) {
         if (!e.isCancelled()) {
             // da das Event async ist muss gewartet werden bis es abgeschlossen ist sonst
-            // werden die folgenden Events also das nächste währe PostLoginEvent ausgeführt
+            // werden die folgenden Events also das nächste wäre PostLoginEvent ausgeführt
             // obwohl das LoginEvent noch nicht abschlossen ist (viele Fehlermeldungen xD)
             // mit e.registerIntent(plugin) wird das warten eingeleitet und mit
             // e.completeIntent(plugin) das warten abgeschlossen.
@@ -42,6 +42,8 @@ public class ConnectListener implements Listener {
         String uuid = e.getConnection().getUniqueId().toString();
         String name = e.getConnection().getName();
         String address = e.getConnection().getSocketAddress().toString();
+
+        HyperiorCore.getRanks().login(e.getConnection().getUniqueId());
 
         // https://wiki.vg/Protocol_version_numbers
         if (e.getConnection().getVersion() < 47 || e.getConnection().getVersion() > 578) {

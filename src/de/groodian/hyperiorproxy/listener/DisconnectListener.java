@@ -1,6 +1,6 @@
 package de.groodian.hyperiorproxy.listener;
 
-import de.groodian.hyperiorproxy.commands.ReportCommand;
+import de.groodian.hyperiorcore.main.HyperiorCore;
 import de.groodian.hyperiorproxy.data.Data;
 import de.groodian.hyperiorproxy.main.Main;
 import de.groodian.hyperiorproxy.team.Team;
@@ -18,7 +18,7 @@ public class DisconnectListener implements Listener {
     }
 
     @EventHandler
-    public void handleDisconnect(PlayerDisconnectEvent e) {
+    public void handleDisconnect(final PlayerDisconnectEvent e) {
         ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> disconnect(e));
     }
 
@@ -27,10 +27,12 @@ public class DisconnectListener implements Listener {
     private void disconnect(PlayerDisconnectEvent e) {
         String uuid = e.getPlayer().getUniqueId().toString();
         String name = e.getPlayer().getName();
+        String address = e.getPlayer().getPendingConnection().getSocketAddress().toString();
 
-        ReportCommand.removeReported(uuid);
+        HyperiorCore.getRanks().logout(e.getPlayer().getUniqueId());
+        plugin.getReport().removeReported(uuid);
         Team.userLogout(uuid, name);
-        Data.logout(uuid, name);
+        Data.logout(uuid, address);
     }
 
 }
