@@ -2,6 +2,7 @@ package de.groodian.hyperiorproxy.data;
 
 import de.groodian.hyperiorcore.main.HyperiorCore;
 import de.groodian.hyperiorcore.util.MySQL;
+import de.groodian.hyperiorcore.util.MySQLConnection;
 import de.groodian.hyperiorproxy.main.Main;
 
 import java.sql.PreparedStatement;
@@ -20,7 +21,7 @@ public class Ban {
     public static boolean hasActiveBan(String uuid) {
         uuid = uuid.replaceAll("-", "");
         if (isInDatabase(uuid)) {
-            String ban = getString("ban", uuid);
+            String ban = getBan(uuid);
             if (ban != null) {
 
                 if (ban.equals("PERMANENT")) {
@@ -52,7 +53,7 @@ public class Ban {
 
             return Main.DISCONNECT_HEADER +
                     "§cDu wurdest von diesem Netzwerk gebannt." +
-                    "\n§cGrund: §e" + getString("reason", uuid) +
+                    "\n§cGrund: §e" + getReason(uuid) +
                     "\n§cDauer: §e" + banTimeLeft +
                     "\n" +
                     "\n§aDu kannst einen Entbannungsantrag an §eunban@hyperior.de §asenden.";
@@ -65,7 +66,7 @@ public class Ban {
     public static String getBanTimeLeft(String uuid) {
         uuid = uuid.replaceAll("-", "");
         if (hasActiveBan(uuid)) {
-            String ban = getString("ban", uuid);
+            String ban = getBan(uuid);
 
             if (ban.equals("PERMANENT")) {
 
@@ -105,6 +106,10 @@ public class Ban {
         return null;
     }
 
+    public static String getBan(String uuid) {
+        return getString("ban", uuid);
+    }
+
     public static String getReason(String uuid) {
         return getString("reason", uuid);
     }
@@ -117,7 +122,7 @@ public class Ban {
         return getString("reporthistory", uuid);
     }
 
-    public static Long getReports(String uuid) {
+    public static long getReports(String uuid) {
         return getLong("reports", uuid);
     }
 
@@ -125,8 +130,9 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
-                String history = getString("history", targetUUID);
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
+                String history = getHistory(targetUUID);
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 if (type.equals(DAYS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusDays(duration)));
@@ -142,17 +148,20 @@ public class Ban {
                 }
                 if (type.equals(SECONDS)) {
                     ps.setString(2, dateTimeFormatter.format(LocalDateTime.now().plusSeconds(duration)));
-                    ps.setString(4, ((history == null) ? "" : history + "\n") + "(" +dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "s. Grund: " + reason);
+                    ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "s. Grund: " + reason);
                 }
                 ps.setString(3, reason);
                 ps.setString(5, targetUUID);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, ban, reason, history) VALUES(?,?,?,?,?)");
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, ban, reason, history) VALUES(?,?,?,?,?)");
                 ps.setString(1, targetUUID);
                 ps.setString(2, targetName);
                 ps.setString(4, reason);
@@ -173,6 +182,8 @@ public class Ban {
                     ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") TEMPBAN von " + executorName + " für " + duration + "s. Grund: " + reason);
                 }
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -183,26 +194,32 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
-                String history = getString("history", targetUUID);
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
+                String history = getHistory(targetUUID);
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 ps.setString(2, "PERMANENT");
                 ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") PBAN von " + executorName + ". Grund: " + reason);
                 ps.setString(3, reason);
                 ps.setString(5, targetUUID);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, ban, reason, history) VALUES(?,?,?,?,?)");
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, ban, reason, history) VALUES(?,?,?,?,?)");
                 ps.setString(1, targetUUID);
                 ps.setString(2, targetName);
                 ps.setString(4, reason);
                 ps.setString(3, "PERMANENT");
                 ps.setString(5, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") PBAN von " + executorName + ". Grund: " + reason);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -213,14 +230,17 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
-                String history = getString("history", targetUUID);
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
+                String history = getHistory(targetUUID);
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE ban SET playername = ?, ban = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 ps.setString(2, null);
                 ps.setString(4, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") UNBAN von " + executorName + ". Grund: " + reason);
                 ps.setString(3, reason);
                 ps.setString(5, targetUUID);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -231,24 +251,30 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
-                String history = getString("history", targetUUID);
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, reason = ?, history = ? WHERE UUID = ?");
+                String history = getHistory(targetUUID);
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE ban SET playername = ?, reason = ?, history = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 ps.setString(3, ((history == null) ? "" : history + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") KICK von " + executorName + ". Grund: " + reason);
                 ps.setString(2, reason);
                 ps.setString(4, targetUUID);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, reason, history) VALUES(?,?,?,?)");
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, reason, history) VALUES(?,?,?,?)");
                 ps.setString(2, targetName);
                 ps.setString(4, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") KICK von " + executorName + ". Grund: " + reason);
                 ps.setString(3, reason);
                 ps.setString(1, targetUUID);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -259,24 +285,31 @@ public class Ban {
         targetUUID = targetUUID.replaceAll("-", "");
         if (isInDatabase(targetUUID)) {
             try {
-                String reportHistory = getString("reporthistory", targetUUID);
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("UPDATE ban SET playername = ?, reports = ?, reporthistory = ? WHERE UUID = ?");
+                String reportHistory = getReportHistory(targetUUID);
+                long reports = getReports(targetUUID);
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE ban SET playername = ?, reports = ?, reporthistory = ? WHERE UUID = ?");
                 ps.setString(1, targetName);
                 ps.setString(3, ((reportHistory == null) ? "" : reportHistory + "\n") + "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") REPORT von " + executorName + ". Grund: " + reason);
-                ps.setLong(2, getLong("reports", targetUUID) + 1);
+                ps.setLong(2, reports + 1);
                 ps.setString(4, targetUUID);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, reports, reporthistory) VALUES(?,?,?,?)");
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO ban (UUID, playername, reports, reporthistory) VALUES(?,?,?,?)");
                 ps.setString(2, targetName);
                 ps.setString(4, "(" + dateTimeFormatter.format(LocalDateTime.now()) + ") REPORT von " + executorName + ". Grund: " + reason);
                 ps.setLong(3, 1);
                 ps.setString(1, targetUUID);
                 ps.executeUpdate();
+                ps.close();
+                connection.finish();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -286,10 +319,14 @@ public class Ban {
     private static boolean isInDatabase(String uuid) {
         uuid = uuid.replaceAll("-", "");
         try {
-            PreparedStatement ps = dataMySQL.getConnection().prepareStatement("SELECT playername FROM ban WHERE UUID = ?");
+            MySQLConnection connection = dataMySQL.getMySQLConnection();
+            PreparedStatement ps = connection.getConnection().prepareStatement("SELECT playername FROM ban WHERE UUID = ?");
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
-            return rs.next();
+            boolean isInDatabase = rs.next();
+            ps.close();
+            connection.finish();
+            return isInDatabase;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -300,12 +337,17 @@ public class Ban {
         uuid = uuid.replaceAll("-", "");
         if (isInDatabase(uuid)) {
             try {
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("SELECT " + data + " FROM ban WHERE UUID = ?");
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("SELECT " + data + " FROM ban WHERE UUID = ?");
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    return rs.getString(data);
+                String returnString = null;
+                if (rs.next()) {
+                    returnString = rs.getString(data);
                 }
+                ps.close();
+                connection.finish();
+                return returnString;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -318,12 +360,17 @@ public class Ban {
         uuid = uuid.replaceAll("-", "");
         if (isInDatabase(uuid)) {
             try {
-                PreparedStatement ps = dataMySQL.getConnection().prepareStatement("SELECT " + data + " FROM ban WHERE UUID = ?");
+                MySQLConnection connection = dataMySQL.getMySQLConnection();
+                PreparedStatement ps = connection.getConnection().prepareStatement("SELECT " + data + " FROM ban WHERE UUID = ?");
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    return rs.getLong(data);
+                long returnLong = 0;
+                if (rs.next()) {
+                    returnLong = rs.getLong(data);
                 }
+                ps.close();
+                connection.finish();
+                return returnLong;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
