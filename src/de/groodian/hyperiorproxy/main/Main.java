@@ -2,6 +2,7 @@ package de.groodian.hyperiorproxy.main;
 
 import de.groodian.hyperiorproxy.commands.BanCommand;
 import de.groodian.hyperiorproxy.commands.BroadcastCommand;
+import de.groodian.hyperiorproxy.commands.DiscordCommand;
 import de.groodian.hyperiorproxy.commands.HelpCommand;
 import de.groodian.hyperiorproxy.commands.KickCommand;
 import de.groodian.hyperiorproxy.commands.LobbyCommand;
@@ -79,6 +80,7 @@ public class Main extends Plugin {
         pluginManager.registerCommand(this, new ShopCommand(this));
         pluginManager.registerCommand(this, new MotdCommand(this));
         pluginManager.registerCommand(this, new SlotsCommand(this));
+        pluginManager.registerCommand(this, new DiscordCommand());
 
         pluginManager.registerListener(this, new ConnectListener(this));
         pluginManager.registerListener(this, new DisconnectListener(this));
