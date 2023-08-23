@@ -1,44 +1,48 @@
 package de.groodian.hyperiorproxy.commands;
-/*
-import de.groodian.hyperiorcore.main.HyperiorCore;
+
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
+import de.groodian.hyperiorcore.command.HArgument;
+import de.groodian.hyperiorcore.command.HCommandVelocity;
 import de.groodian.hyperiorproxy.main.Main;
-import de.groodian.hyperiorproxy.team.Team;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.command.ConsoleCommandSender;
+import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
-public class SlotsCommand extends Command {
+public class SlotsCommand extends HCommandVelocity<CommandSource> {
 
-    private Main plugin;
+    private final Main plugin;
 
     public SlotsCommand(Main plugin) {
-        super("slots");
+        super(CommandSource.class, "slots", "Change the slots", Main.PREFIX_COMPONENT, "slots", List.of(), List.of(new HArgument("slots")));
         this.plugin = plugin;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (sender instanceof ProxiedPlayer || sender instanceof ConsoleCommandSender) {
-            if (sender instanceof ProxiedPlayer) {
-                if (!HyperiorCore.getRanks().has(((ProxiedPlayer) sender).getUniqueId(), "slots")) {
-                    return;
-                }
-            }
-            if (args.length == 1) {
-                if (args[0].chars().allMatch(Character::isDigit)) {
-                    int slots = Integer.parseInt(args[0]);
-                    plugin.setSlots(slots);
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aSlots erfolgreich geändert."));
-                    Team.notify("§6" + sender.getName() + "§a hat die Slots auf §6" + slots + "§a gesetzt!");
-                } else
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDie Slots müssen eine Zahl sein!"));
-            } else
-                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/slots <Slots>§c!"));
-        } else
-            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+    protected void onCall(CommandSource source, String[] args) {
+        int slots;
+        try {
+            slots = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
+            sendMsg(source, Component.text("The slots has to be a number.", NamedTextColor.RED));
+            return;
+        }
+
+        if (slots < 0) {
+            sendMsg(source, Component.text("The slots has to be a positive.", NamedTextColor.RED));
+            return;
+        }
+
+        String sourceName;
+        if (source instanceof Player sourcePlayer) {
+            sourceName = sourcePlayer.getUsername();
+        } else {
+            sourceName = "Console";
+        }
+
+        plugin.setSlots(slots);
+        sendMsg(source, Component.text("Successfully changed the slots.", NamedTextColor.GREEN));
+        plugin.getTeam().notify("§6" + sourceName + "§a changed the slots to §6" + slots + "§a.");
     }
 
 }
-*/

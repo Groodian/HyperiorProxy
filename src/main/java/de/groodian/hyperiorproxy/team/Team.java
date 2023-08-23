@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class Team {
@@ -32,9 +33,13 @@ public class Team {
     }
 
     public void notify(String msg) {
+        notify(LegacyComponentSerializer.legacySection().deserialize(msg));
+    }
+
+    public void notify(Component msg) {
         for (UUID playerUUID : players) {
             Optional<Player> player = plugin.getServer().getPlayer(playerUUID);
-            player.ifPresent(value -> value.sendMessage(LegacyComponentSerializer.legacySection().deserialize(TEAM_PREFIX + msg)));
+            player.ifPresent(value -> value.sendMessage(LegacyComponentSerializer.legacySection().deserialize(TEAM_PREFIX).append(msg)));
         }
     }
 

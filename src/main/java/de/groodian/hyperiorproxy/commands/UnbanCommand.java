@@ -1,82 +1,72 @@
 package de.groodian.hyperiorproxy.commands;
-/*
+
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
+import de.groodian.hyperiorcore.command.HArgument;
+import de.groodian.hyperiorcore.command.HCommandVelocity;
+import de.groodian.hyperiorcore.command.HTabCompleteType;
 import de.groodian.hyperiorcore.main.HyperiorCore;
+import de.groodian.hyperiorcore.user.User;
 import de.groodian.hyperiorcore.util.UUIDFetcher;
-import de.groodian.hyperiorproxy.user.Ban;
 import de.groodian.hyperiorproxy.main.Main;
-import de.groodian.hyperiorproxy.team.Team;
-import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.command.ConsoleCommandSender;
+import de.groodian.hyperiorproxy.user.UserHistory;
+import de.groodian.hyperiorproxy.user.UserHistoryType;
+import java.util.List;
+import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
-public class UnbanCommand extends Command {
+public class UnbanCommand extends HCommandVelocity<CommandSource> {
 
-    private Main plugin;
-    private UUIDFetcher uuidFetcher;
+    private final Main plugin;
 
     public UnbanCommand(Main plugin) {
-        super("unban");
+        super(CommandSource.class, "unban", "Unban a player", Main.PREFIX_COMPONENT, "unban", List.of(),
+                List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("reason", true, HTabCompleteType.NONE)));
         this.plugin = plugin;
-        uuidFetcher = new UUIDFetcher();
     }
 
     @Override
-    public void execute(final CommandSender sender, final String[] args) {
-        if (sender instanceof ProxiedPlayer || sender instanceof ConsoleCommandSender) {
-            if (sender instanceof ProxiedPlayer) {
-                if (!HyperiorCore.getRanks().has(((ProxiedPlayer) sender).getUniqueId(), "unban")) {
-                    return;
-                }
+    protected void onCall(CommandSource source, String[] args) {
+        sendMsg(source, "Please wait, this can take a moment.", NamedTextColor.GRAY);
+
+        plugin.getServer().getScheduler().buildTask(plugin, () -> {
+            UUIDFetcher.Result result = new UUIDFetcher().getNameAndUUIDFromName(args[0]);
+
+            if (result == null) {
+                sendMsg(source, Component.text("This player does not exist.", NamedTextColor.RED));
+                return;
             }
-            if (args.length >= 2) {
-                final ProxiedPlayer target = BungeeCord.getInstance().getPlayer(args[0]);
-                StringBuilder stringBuilder = new StringBuilder();
-                for (int i = 1; i < args.length; i++) {
-                    if (stringBuilder.length() == 0)
-                        stringBuilder.append(args[i]);
-                    else
-                        stringBuilder.append(" ").append(args[i]);
-                }
-                final String reason = stringBuilder.toString();
-                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Bitte warte, dies kann einen moment dauern."));
 
-                ProxyServer.getInstance().getScheduler().runAsync(plugin, () -> {
+            User user = HyperiorCore.getUserManager().loadUser(result.getUUID());
+            UserHistory userHistoryCurrent = plugin.getBan().loadUserHistory(user.getBan());
+            String banDisconnectReason = plugin.getBan().getDisconnectReason(userHistoryCurrent);
+            if (banDisconnectReason == null) {
+                sendMsg(source, Component.text("This player does not have an active ban.", NamedTextColor.RED));
+                return;
+            }
 
-                    if (target != null) {
-                        String uuid = target.getUniqueId().toString().replaceAll("-", "");
-                        if (Ban.hasActiveBan(uuid)) {
-                            Ban.unban(uuid, target.getName(), sender.getName(), reason);
-                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + target.getName() + " §aentbannt. Grund: §6" + reason));
-                            Team.notify("§6" + sender.getName() + "§a hat §6" + target.getName() + " §aentbannt. Grund: §6" + reason);
-                        } else {
-                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
-                        }
-                    } else {
-                        sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§7Dieser Spieler ist nicht Online, downloade UUID..."));
-                        UUIDFetcher.Result result = uuidFetcher.getNameAndUUIDFromName(args[0]);
-                        if (result == null) {
-                            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler existiert nicht."));
-                        } else {
-                            if (Ban.hasActiveBan(result.getUUID())) {
-                                Ban.unban(result.getUUID(), result.getName(), sender.getName(), reason);
-                                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDu hast §6" + result.getName() + " §aentbannt. Grund: §6" + reason));
-                                Team.notify("§6" + sender.getName() + "§a hat §6" + result.getName() + " §aentbannt. Grund: §6" + reason);
-                            } else {
-                                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDieser Spieler hat keinen Ban."));
-                            }
-                        }
-                    }
+            UUID createdBy;
+            String sourceName;
+            if (source instanceof Player player) {
+                createdBy = player.getUniqueId();
+                sourceName = player.getUsername();
+            } else {
+                createdBy = new UUID(0, 0);
+                sourceName = "Console";
+            }
 
-                });
+            UserHistory userHistory = new UserHistory(result.getUUID(), createdBy, UserHistoryType.UNBAN, args[1], null);
 
-            } else
-                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/unban <Spieler> <Grund>§c!"));
-        } else
-            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+            if (plugin.getBan().ban(result.getName(), userHistory)) {
+                sendMsg(source, LegacyComponentSerializer.legacySection()
+                        .deserialize("§aYou have unbanned §6" + result.getName() + "§a. Reason: §6" + args[1]));
+                plugin.getTeam().notify("§6" + sourceName + "§a unbanned §6" + result.getName() + "§a. Reason: §6" + args[1]);
+            } else {
+                sendMsg(source, Component.text("An error occurred!", NamedTextColor.DARK_RED));
+            }
+        }).schedule();
     }
 
-}*/
+}

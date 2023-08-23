@@ -1,52 +1,47 @@
 package de.groodian.hyperiorproxy.commands;
-/*
+
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
+import de.groodian.hyperiorcore.command.HCommandVelocity;
 import de.groodian.hyperiorcore.main.HyperiorCore;
+import de.groodian.hyperiorcore.user.User;
 import de.groodian.hyperiorproxy.main.Main;
-import de.groodian.hyperiorproxy.team.Team;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.command.ConsoleCommandSender;
+import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
-public class MaintenanceCommand extends Command {
+public class MaintenanceCommand extends HCommandVelocity<CommandSource> {
 
-    private Main plugin;
+    private final Main plugin;
 
     public MaintenanceCommand(Main plugin) {
-        super("wartung");
+        super(CommandSource.class, "maintenance", "Change the maintenance mode", Main.PREFIX_COMPONENT, "maintenance", List.of(),
+                List.of());
         this.plugin = plugin;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (sender instanceof ProxiedPlayer || sender instanceof ConsoleCommandSender) {
-            if (sender instanceof ProxiedPlayer) {
-                if (!HyperiorCore.getRanks().has(((ProxiedPlayer) sender).getUniqueId(), "maintenance")) {
-                    return;
+    protected void onCall(CommandSource source, String[] args) {
+        String sourceName;
+        if (source instanceof Player sourcePlayer) {
+            sourceName = sourcePlayer.getUsername();
+        } else {
+            sourceName = "Console";
+        }
+
+        plugin.setMaintenance(!plugin.isMaintenance());
+
+        if (plugin.isMaintenance()) {
+            for (Player player : plugin.getServer().getAllPlayers()) {
+                User user = HyperiorCore.getUserManager().get(player.getUniqueId());
+                if (user != null && !user.has("maintenance")) {
+                    player.disconnect(Component.text("Der Server wird nun gewartet!", NamedTextColor.RED));
                 }
             }
-            if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("an")) {
-                    plugin.setMaintenance(true);
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDer Wartungs-Modus ist nun an."));
-                    Team.notify("§6" + sender.getName() + "§a aktiviert den Wartungs-Modus!");
-                    for (ProxiedPlayer online : plugin.getProxy().getPlayers()) {
-                        if (!HyperiorCore.getRanks().has(online.getUniqueId(), "maintenance")) {
-                            online.disconnect(TextComponent.fromLegacyText("§cDer Server wird nun gewartet!"));
-                        }
-                    }
-                } else if (args[0].equalsIgnoreCase("aus")) {
-                    plugin.setMaintenance(false);
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§aDer Wartungs-Modus ist nun aus."));
-                    Team.notify("§6" + sender.getName() + "§a deaktiviert den Wartungs-Modus!");
-                } else
-                    sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
-            } else
-                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/wartung <an/aus>§c!"));
-        } else
-            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+        }
+
+        sendMsg(source, Component.text("Successfully changed the maintenance mode to: " + plugin.isMaintenance(), NamedTextColor.GREEN));
+        plugin.getTeam().notify("§6" + sourceName + "§a changed the maintenance mode to: " + plugin.isMaintenance());
     }
 
 }
-*/

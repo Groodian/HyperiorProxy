@@ -1,31 +1,40 @@
 package de.groodian.hyperiorproxy.commands;
-/*
+
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ServerConnection;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
+import de.groodian.hyperiorcore.command.HCommandVelocity;
 import de.groodian.hyperiorproxy.main.Main;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
+import java.util.List;
+import java.util.Optional;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
-public class LobbyCommand extends Command {
+public class LobbyCommand extends HCommandVelocity<Player> {
 
-    public LobbyCommand() {
-        super("lobby", null, "l", "hub", "h", "spawn");
+    private final Main plugin;
+
+    public LobbyCommand(Main plugin) {
+        super(Player.class, "lobby", "Return to the lobby", Main.PREFIX_COMPONENT, null, List.of(), List.of());
+        this.plugin = plugin;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (sender instanceof ProxiedPlayer) {
-            ProxiedPlayer player = (ProxiedPlayer) sender;
-            if (!player.getServer().getInfo().getName().toLowerCase().contains("lobby")) {
-                player.connect(ProxyServer.getInstance().getServerInfo("LOBBY"));
-            } else {
-                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cDu bist bereits in einer Lobby."));
+    protected void onCall(Player player, String[] args) {
+        Optional<ServerConnection> currentServer = player.getCurrentServer();
+        if (currentServer.isEmpty()) {
+            return;
+        }
+
+        if (!currentServer.get().getServerInfo().getName().toUpperCase().contains("LOBBY")) {
+            Optional<RegisteredServer> registeredServer = plugin.getServer().getServer("LOBBY");
+            if (registeredServer.isEmpty()) {
+                return;
             }
+            player.createConnectionRequest(registeredServer.get());
         } else {
-            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler ausgeführt werden."));
+            sendMsg(player, Component.text("Du bist bereits in einer Lobby.", NamedTextColor.RED));
         }
     }
 
 }
-*/

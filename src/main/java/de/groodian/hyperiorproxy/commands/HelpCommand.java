@@ -1,25 +1,32 @@
 package de.groodian.hyperiorproxy.commands;
-/*
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.plugin.Command;
 
-public class HelpCommand extends Command {
+import com.velocitypowered.api.command.CommandSource;
+import de.groodian.hyperiorcore.command.HCommandVelocity;
+import de.groodian.hyperiorproxy.main.Main;
+import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
+public class HelpCommand extends HCommandVelocity<CommandSource> {
 
     public HelpCommand() {
-        super("help", null, "hilfe");
+        super(CommandSource.class, "help", "Help for the server", Main.PREFIX_COMPONENT, null, List.of(), List.of());
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(TextComponent.fromLegacyText("§7[§bHyperior.de§7] §6Informationen zum Hyperior-Netzwerk:" +
-                "\n§e/lobby §7Kehre zu einer Lobby zurück" +
-                "\n§e/party §7Spiele mit Freunden in einer Party" +
-                "\n§e/friend §7Verwalte deine Freunde" +
-                "\n§e/report §7Melde einen Spieler" +
-                "\n§e/shop §7Informationen über Ränge und mehr" +
-                "\n§7Für weitere Informationen kannst du dich an das Server-Team wenden."
-        ));
+    protected void onCall(CommandSource source, String[] args) {
+        Component component = LegacyComponentSerializer.legacySection()
+                .deserialize("""
+                             §7[§bHyperior.de§7] §6Informationen zum Hyperior-Netzwerk:
+                             §e/lobby §7Kehre zu einer Lobby zurück
+                             §e/party §7Spiele mit Freunden in einer Party
+                             §e/friend §7Verwalte deine Freunde
+                             §e/report §7Melde einen Spieler
+                             §e/shop §7Informationen über Ränge und mehr
+                             §7Für weitere Informationen kannst du dich an das Server-Team wenden.
+                             """);
+
+        source.sendMessage(component);
     }
+
 }
-*/

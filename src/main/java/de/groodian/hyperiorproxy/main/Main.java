@@ -7,6 +7,22 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import de.groodian.hyperiorcore.command.HCommandManagerVelocity;
+import de.groodian.hyperiorcore.main.HyperiorCore;
+import de.groodian.hyperiorproxy.commands.BanCommand;
+import de.groodian.hyperiorproxy.commands.BroadcastCommand;
+import de.groodian.hyperiorproxy.commands.DiscordCommand;
+import de.groodian.hyperiorproxy.commands.HelpCommand;
+import de.groodian.hyperiorproxy.commands.KickCommand;
+import de.groodian.hyperiorproxy.commands.LobbyCommand;
+import de.groodian.hyperiorproxy.commands.LookupCommand;
+import de.groodian.hyperiorproxy.commands.MaintenanceCommand;
+import de.groodian.hyperiorproxy.commands.MotdCommand;
+import de.groodian.hyperiorproxy.commands.PBanCommand;
+import de.groodian.hyperiorproxy.commands.PingCommand;
+import de.groodian.hyperiorproxy.commands.ShopCommand;
+import de.groodian.hyperiorproxy.commands.SlotsCommand;
+import de.groodian.hyperiorproxy.commands.UnbanCommand;
 import de.groodian.hyperiorproxy.listener.ConnectListener;
 import de.groodian.hyperiorproxy.listener.DisconnectListener;
 import de.groodian.hyperiorproxy.listener.JoinListener;
@@ -16,6 +32,9 @@ import de.groodian.hyperiorproxy.team.Team;
 import de.groodian.hyperiorproxy.user.Ban;
 import de.groodian.hyperiorproxy.user.Data;
 import de.groodian.network.DataPackage;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.slf4j.Logger;
 
@@ -29,13 +48,16 @@ import org.slf4j.Logger;
 public class Main {
 
     public static final String PREFIX = "§7[§bHyperiorProxy§7] §r";
+    public static final Component PREFIX_COMPONENT = Component.text("[", NamedTextColor.GRAY)
+            .append(Component.text("HyperiorProxy", NamedTextColor.AQUA))
+            .append(Component.text("] ", NamedTextColor.GRAY));
     public static final String DISCONNECT_HEADER = "§6§lH§f§lYPERIOR.DE §6§lS§f§lERVERNETZWERK\n\n";
 
     private final ProxyServer server;
     private final Logger logger;
 
     private boolean maintenance;
-    private String motdSecondLine;
+    private Component motdSecondLine;
     private int slots;
     private int groupNumber;
 
@@ -55,7 +77,7 @@ public class Main {
         logger.info(PREFIX + "§aDas Plugin wird geladen...");
 
         setMaintenance(true);
-        setMotdSecondLine("§c§oDieses Netzwerk ist aktuell in der Beta.");
+        setMotdSecondLine(Component.text("Dieses Netzwerk ist aktuell in der Beta.", NamedTextColor.RED).decorate(TextDecoration.ITALIC));
         setSlots(50);
         groupNumber = Integer.parseInt(PlainTextComponentSerializer.plainText().serialize(server.getConfiguration().getMotd()));
 
@@ -69,6 +91,22 @@ public class Main {
         eventManager.register(this, new DisconnectListener(this));
         eventManager.register(this, new JoinListener(this));
         eventManager.register(this, new PingListener(this));
+
+        HCommandManagerVelocity hCommandManagerVelocity = HyperiorCore.getHCommandManagerVelocity();
+        hCommandManagerVelocity.registerCommand(new BanCommand(this));
+        hCommandManagerVelocity.registerCommand(new KickCommand(this));
+        hCommandManagerVelocity.registerCommand(new PBanCommand(this));
+        hCommandManagerVelocity.registerCommand(new UnbanCommand(this));
+        hCommandManagerVelocity.registerCommand(new LookupCommand(this));
+        hCommandManagerVelocity.registerCommand(new BroadcastCommand(this));
+        hCommandManagerVelocity.registerCommand(new DiscordCommand());
+        hCommandManagerVelocity.registerCommand(new HelpCommand());
+        hCommandManagerVelocity.registerCommand(new ShopCommand(this));
+        hCommandManagerVelocity.registerCommand(new MaintenanceCommand(this));
+        hCommandManagerVelocity.registerCommand(new MotdCommand(this));
+        hCommandManagerVelocity.registerCommand(new SlotsCommand(this));
+        hCommandManagerVelocity.registerCommand(new LobbyCommand(this));
+        hCommandManagerVelocity.registerCommand(new PingCommand());
 
         logger.info(PREFIX + "§aGeladen!");
     }
@@ -98,11 +136,11 @@ public class Main {
         this.maintenance = maintenance;
     }
 
-    public String getMotdSecondLine() {
+    public Component getMotdSecondLine() {
         return motdSecondLine;
     }
 
-    public void setMotdSecondLine(String motdSecondLine) {
+    public void setMotdSecondLine(Component motdSecondLine) {
         this.motdSecondLine = motdSecondLine;
     }
 

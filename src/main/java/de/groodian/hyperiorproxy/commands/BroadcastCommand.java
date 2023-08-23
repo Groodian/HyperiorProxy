@@ -1,39 +1,29 @@
 package de.groodian.hyperiorproxy.commands;
-/*
-import de.groodian.hyperiorcore.main.HyperiorCore;
+
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
+import de.groodian.hyperiorcore.command.HArgument;
+import de.groodian.hyperiorcore.command.HCommandVelocity;
+import de.groodian.hyperiorcore.command.HTabCompleteType;
 import de.groodian.hyperiorproxy.main.Main;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.command.ConsoleCommandSender;
+import java.util.List;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
-public class BroadcastCommand extends Command {
+public class BroadcastCommand extends HCommandVelocity<CommandSource> {
 
-    public BroadcastCommand() {
-        super("broadcast", null, "b");
+    private final Main plugin;
+
+    public BroadcastCommand(Main plugin) {
+        super(CommandSource.class, "broadcast", "Broadcast a message", Main.PREFIX_COMPONENT, "broadcast", List.of(),
+                List.of(new HArgument("reason", true, HTabCompleteType.NONE)));
+        this.plugin = plugin;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (sender instanceof ProxiedPlayer || sender instanceof ConsoleCommandSender) {
-            if (sender instanceof ProxiedPlayer) {
-                if (!HyperiorCore.getRanks().has(((ProxiedPlayer) sender).getUniqueId(), "broadcast")) {
-                    return;
-                }
-            }
-            if (args.length >= 1) {
-                StringBuilder stringBuilder = new StringBuilder();
-                for (String arg : args) {
-                    stringBuilder.append(arg).append(" ");
-                }
-                ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', stringBuilder.toString())));
-            } else
-                sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "§cBenutze §6/broadcast <Nachricht>§c!"));
-        } else
-            sender.sendMessage(TextComponent.fromLegacyText(Main.PREFIX + "Dieser Befehl muss von einem Spieler oder der Konsole ausgeführt werden."));
+    protected void onCall(CommandSource source, String[] args) {
+        for (Player player : plugin.getServer().getAllPlayers()) {
+            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(args[0]));
+        }
     }
+
 }
-*/
