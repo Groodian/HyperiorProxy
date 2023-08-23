@@ -4,6 +4,7 @@ import com.velocitypowered.api.proxy.Player;
 import de.groodian.hyperiorcore.user.User;
 import de.groodian.hyperiorproxy.main.Main;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +20,7 @@ public class Team {
 
     public Team(Main plugin) {
         this.plugin = plugin;
-        this.players = new ArrayList<>();
+        this.players = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void userLogin(User user) {
