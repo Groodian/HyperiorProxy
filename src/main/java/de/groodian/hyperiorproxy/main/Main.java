@@ -92,7 +92,7 @@ public class Main {
         eventManager.register(this, new JoinListener(this));
         eventManager.register(this, new PingListener(this));
 
-        HCommandManagerVelocity hCommandManagerVelocity = HyperiorCore.getHCommandManagerVelocity();
+        HCommandManagerVelocity hCommandManagerVelocity = HyperiorCore.getVelocity().getHCommandManagerVelocity();
         hCommandManagerVelocity.registerCommand(new BanCommand(this));
         hCommandManagerVelocity.registerCommand(new KickCommand(this));
         hCommandManagerVelocity.registerCommand(new PBanCommand(this));

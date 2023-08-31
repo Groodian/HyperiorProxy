@@ -48,7 +48,7 @@ public class LookupCommand extends HCommandVelocity<CommandSource> {
                 return;
             }
 
-            User user = HyperiorCore.getUserManager().loadUser(result.getUUID());
+            User user = HyperiorCore.getVelocity().getUserManager().loadUser(result.getUUID());
 
             if (user == null) {
                 sendMsg(source, Component.text("This player has never joined this server.", NamedTextColor.RED));
@@ -107,7 +107,7 @@ public class LookupCommand extends HCommandVelocity<CommandSource> {
         if (Objects.equals(userHistory.getCreatedBy(), new UUID(0, 0))) {
             createdByName = "Console";
         } else {
-            User user = HyperiorCore.getUserManager().loadUser(userHistory.getCreatedBy());
+            User user = HyperiorCore.getVelocity().getUserManager().loadUser(userHistory.getCreatedBy());
             createdByName = user.getName();
         }
 

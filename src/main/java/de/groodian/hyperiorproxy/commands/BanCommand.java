@@ -27,7 +27,8 @@ public class BanCommand extends HCommandVelocity<CommandSource> {
     public BanCommand(Main plugin) {
         super(CommandSource.class, "ban", "Ban a player", Main.PREFIX_COMPONENT, "ban", List.of(),
                 List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("duration"),
-                        new HArgument("duration type", HTabCompleteType.CUSTOM), new HArgument("reason", true, HTabCompleteType.NONE)));
+                        new HArgument("duration type", HTabCompleteType.CUSTOM),
+                        new HArgument("reason", true, HTabCompleteType.NONE, false)));
         this.plugin = plugin;
     }
 

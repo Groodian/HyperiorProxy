@@ -15,7 +15,7 @@ public class MotdCommand extends HCommandVelocity<CommandSource> {
 
     public MotdCommand(Main plugin) {
         super(CommandSource.class, "motd", "Change the motd", Main.PREFIX_COMPONENT, "motd", List.of(),
-                List.of(new HArgument("motd", true, HTabCompleteType.NONE)));
+                List.of(new HArgument("motd", true, HTabCompleteType.NONE, false)));
         this.plugin = plugin;
     }
 

@@ -23,7 +23,7 @@ public class Ban {
 
         UserHistory userHistory = null;
 
-        DatabaseConnection databaseConnection = HyperiorCore.getDatabaseManager().getConnection();
+        DatabaseConnection databaseConnection = HyperiorCore.getVelocity().getDatabaseManager().getConnection();
 
         try {
             PreparedStatement ps = databaseConnection.getPreparedStatement(
@@ -93,9 +93,9 @@ public class Ban {
     }
 
     public boolean ban(String name, UserHistory userHistory) {
-        HyperiorCore.getUserManager().getOrCreateUser(userHistory.getTarget(), name);
+        HyperiorCore.getVelocity().getUserManager().getOrCreateUser(userHistory.getTarget(), name);
 
-        DatabaseConnection databaseConnection = HyperiorCore.getDatabaseManager().getConnection();
+        DatabaseConnection databaseConnection = HyperiorCore.getVelocity().getDatabaseManager().getConnection();
 
         try {
             databaseConnection.getConnection().setAutoCommit(false);
@@ -133,7 +133,7 @@ public class Ban {
     public List<UserHistory> loadCompleteUserHistory(UUID uuid) {
         List<UserHistory> completeUserHistory = new ArrayList<>();
 
-        DatabaseConnection databaseConnection = HyperiorCore.getDatabaseManager().getConnection();
+        DatabaseConnection databaseConnection = HyperiorCore.getVelocity().getDatabaseManager().getConnection();
 
         try {
             PreparedStatement ps = databaseConnection.getPreparedStatement(

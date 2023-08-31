@@ -21,7 +21,7 @@ public class PBanCommand extends HCommandVelocity<CommandSource> {
 
     public PBanCommand(Main plugin) {
         super(CommandSource.class, "pban", "Ban a player permanently", Main.PREFIX_COMPONENT, "pban", List.of(),
-                List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("reason", true, HTabCompleteType.NONE)));
+                List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("reason", true, HTabCompleteType.NONE, false)));
         this.plugin = plugin;
     }
 

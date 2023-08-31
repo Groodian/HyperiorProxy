@@ -24,7 +24,7 @@ public class DisconnectListener {
         Player player = e.getPlayer();
 
         plugin.getTeam().userLogout(player);
-        plugin.getData().logout(player.getUniqueId());
+        plugin.getData().logout(player);
 
         continuation.resume();
     }

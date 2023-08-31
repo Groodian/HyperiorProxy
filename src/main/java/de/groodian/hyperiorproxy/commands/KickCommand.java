@@ -21,7 +21,7 @@ public class KickCommand extends HCommandVelocity<CommandSource> {
 
     public KickCommand(Main plugin) {
         super(CommandSource.class, "kick", "Kick a player", Main.PREFIX_COMPONENT, "kick", List.of(),
-                List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("reason", true, HTabCompleteType.NONE)));
+                List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("reason", true, HTabCompleteType.NONE, false)));
         this.plugin = plugin;
     }
 

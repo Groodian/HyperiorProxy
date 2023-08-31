@@ -23,7 +23,7 @@ public class UnbanCommand extends HCommandVelocity<CommandSource> {
 
     public UnbanCommand(Main plugin) {
         super(CommandSource.class, "unban", "Unban a player", Main.PREFIX_COMPONENT, "unban", List.of(),
-                List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("reason", true, HTabCompleteType.NONE)));
+                List.of(new HArgument("player", HTabCompleteType.PLAYER), new HArgument("reason", true, HTabCompleteType.NONE, false)));
         this.plugin = plugin;
     }
 
@@ -39,7 +39,7 @@ public class UnbanCommand extends HCommandVelocity<CommandSource> {
                 return;
             }
 
-            User user = HyperiorCore.getUserManager().loadUser(result.getUUID());
+            User user = HyperiorCore.getVelocity().getUserManager().loadUser(result.getUUID());
             UserHistory userHistoryCurrent = plugin.getBan().loadUserHistory(user.getBan());
             String banDisconnectReason = plugin.getBan().getDisconnectReason(userHistoryCurrent);
             if (banDisconnectReason == null) {

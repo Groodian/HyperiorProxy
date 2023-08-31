@@ -33,7 +33,7 @@ public class MaintenanceCommand extends HCommandVelocity<CommandSource> {
 
         if (plugin.isMaintenance()) {
             for (Player player : plugin.getServer().getAllPlayers()) {
-                User user = HyperiorCore.getUserManager().get(player.getUniqueId());
+                User user = HyperiorCore.getVelocity().getUserManager().get(player.getUniqueId());
                 if (user != null && !user.has("maintenance")) {
                     player.disconnect(Component.text("Der Server wird nun gewartet!", NamedTextColor.RED));
                 }

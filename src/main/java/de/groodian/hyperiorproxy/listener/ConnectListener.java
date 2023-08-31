@@ -27,10 +27,10 @@ public class ConnectListener {
     private void connect(LoginEvent e, Continuation continuation) {
         Player player = e.getPlayer();
 
-        User user = HyperiorCore.getUserManager().get(player.getUniqueId());
+        User user = HyperiorCore.getVelocity().getUserManager().get(player.getUniqueId());
 
         plugin.getTeam().userLogin(user);
-        plugin.getData().login(user.getUuid());
+        plugin.getData().login(player);
 
         // https://wiki.vg/Protocol_version_numbers
         if (player.getProtocolVersion().getProtocol() != 762) {

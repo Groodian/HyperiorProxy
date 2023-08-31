@@ -15,7 +15,7 @@ public class BroadcastCommand extends HCommandVelocity<CommandSource> {
 
     public BroadcastCommand(Main plugin) {
         super(CommandSource.class, "broadcast", "Broadcast a message", Main.PREFIX_COMPONENT, "broadcast", List.of(),
-                List.of(new HArgument("reason", true, HTabCompleteType.NONE)));
+                List.of(new HArgument("message", true, HTabCompleteType.NONE, false)));
         this.plugin = plugin;
     }
 
