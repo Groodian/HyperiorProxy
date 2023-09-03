@@ -31,7 +31,7 @@ public class LobbyCommand extends HCommandVelocity<Player> {
             if (registeredServer.isEmpty()) {
                 return;
             }
-            player.createConnectionRequest(registeredServer.get());
+            player.createConnectionRequest(registeredServer.get()).fireAndForget();
         } else {
             sendMsg(player, Component.text("Du bist bereits in einer Lobby.", NamedTextColor.RED));
         }

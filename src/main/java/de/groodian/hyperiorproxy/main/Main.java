@@ -105,7 +105,7 @@ public class Main {
         hCommandManagerVelocity.registerCommand(new MaintenanceCommand(this));
         hCommandManagerVelocity.registerCommand(new MotdCommand(this));
         hCommandManagerVelocity.registerCommand(new SlotsCommand(this));
-        hCommandManagerVelocity.registerCommand(new LobbyCommand(this));
+        hCommandManagerVelocity.registerCommand(new LobbyCommand(this), "l");
         hCommandManagerVelocity.registerCommand(new PingCommand());
 
         logger.info(PREFIX + "§aGeladen!");
