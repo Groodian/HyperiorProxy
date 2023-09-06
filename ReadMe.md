@@ -24,4 +24,4 @@ Here is a list of all subprojects for the Hyperior Minecraft Server Network:
 ## Build
 To compile this plugin, you need JDK 17 and an internet connection.
 
-Clone this repo, run `./gradlew reobfJar` from your terminal. You can find the compiled jar in the project root's `build/libs` directory.
+Clone this repo, run `./gradlew build` from your terminal. You can find the compiled jar in the project root's `build/libs` directory.
