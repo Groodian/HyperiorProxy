@@ -25,7 +25,9 @@ public class PingListener {
                 new ServerPing.SamplePlayer("§aMinecraftParty und vieles mehr!", UUID.randomUUID()));
 
         builder.description(
-                LegacyComponentSerializer.legacySection().deserialize(SERVER_NAME + " §a1.19.4\n§r").append(plugin.getMotdSecondLine()));
+                LegacyComponentSerializer.legacySection()
+                        .deserialize(SERVER_NAME + " §a" + Main.MC_VERSION + "\n§r")
+                        .append(plugin.getMotdSecondLine()));
 
         builder.version(new ServerPing.Version(e.getConnection().getProtocolVersion().getProtocol() + 1, ""));
 

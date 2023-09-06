@@ -33,9 +33,9 @@ public class ConnectListener {
         plugin.getData().login(player);
 
         // https://wiki.vg/Protocol_version_numbers
-        if (player.getProtocolVersion().getProtocol() != 762) {
+        if (player.getProtocolVersion().getProtocol() != 763) {
             player.disconnect(LegacyComponentSerializer.legacySection()
-                    .deserialize(Main.DISCONNECT_HEADER + "§7Bitte verwende die Version §a1.19.4"));
+                    .deserialize(Main.DISCONNECT_HEADER + "§7Bitte verwende die Version §a" + Main.MC_VERSION));
             plugin.getTeam()
                     .notify("§6" + player.getUsername() +
                             "§a hat versucht den Server beizutreten aber verwendet eine falsche Version. §7(" +

@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 )
 public class Main {
 
+    public static final String MC_VERSION = "1.20.1";
     public static final String PREFIX = "§7[§bHyperiorProxy§7] §r";
     public static final Component PREFIX_COMPONENT = Component.text("[", NamedTextColor.GRAY)
             .append(Component.text("HyperiorProxy", NamedTextColor.AQUA))

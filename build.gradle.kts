@@ -12,8 +12,8 @@ java {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.1.1")
-    annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
+    compileOnly("com.velocitypowered:velocity-api:3.2.0-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.2.0-SNAPSHOT")
     implementation(files("../HyperiorCore/build/libs/HyperiorCore-5.0.0-SNAPSHOT.jar"))
 }
 

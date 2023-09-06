@@ -12,7 +12,7 @@ public class Data {
 
         try {
             PreparedStatement ps = databaseConnection.getPreparedStatement(
-                    "UPDATE hyperior_mc.users SET name = ?, logins = logins + 1, last_login = now(), login_days = login_days + DATE_PART('DAY', (now() - COALESCE(last_logout, now() - INTERVAL '1 DAY'))) WHERE uuid = ?");
+                    "UPDATE hyperior_mc.users SET name = ?, logins = logins + 1, last_login = now(), login_days = login_days + LEAST(1, DATE_PART('DAY', (now() - COALESCE(last_logout, now() - INTERVAL '1 DAY')))) WHERE uuid = ?");
             ps.setString(1, player.getUsername());
             ps.setObject(2, player.getUniqueId());
             ps.executeUpdate();
@@ -28,7 +28,7 @@ public class Data {
 
         try {
             PreparedStatement ps = databaseConnection.getPreparedStatement(
-                    "UPDATE hyperior_mc.users SET last_logout = now(), login_days = login_days + DATE_PART('DAY', (now() - last_login)), connection_time = connection_time + EXTRACT(EPOCH FROM (now() - last_login)) WHERE uuid = ?");
+                    "UPDATE hyperior_mc.users SET last_logout = now(), login_days = login_days + LEAST(1, DATE_PART('DAY', (now() - last_login))), connection_time = connection_time + EXTRACT(EPOCH FROM (now() - last_login)) WHERE uuid = ?");
             ps.setObject(1, player.getUniqueId());
             ps.executeUpdate();
         } catch (Exception e) {
